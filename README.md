@@ -1,85 +1,81 @@
+# LeadArch — Figment Property Sourcing Agent
 
-# ☀️ Solar ROI Insights – ML & Visualization Dashboard
+**LeadArch** is an agentic property sourcing and outreach tool built for [Figment](https://www.figment.com.sg/) — Singapore's boutique heritage homes company. It identifies, scores, and generates hyper-personalised outreach to property owners across Singapore's conservation districts.
 
-This project provides a complete end-to-end analysis of solar panel installations using a dataset of 50,000+ rows. It combines data visualizations and machine learning models to uncover financial and environmental insights related to solar adoption.
-
----
-
-## 📌 Project Objectives
-
-- Explore trends in solar consumption, savings, and subsidies
-- Visualize solar performance metrics across key dimensions
-- Train ML models to predict:
-  - ROI percentage
-  - Payback period
-  - Monthly savings
-  - High ROI classification
-- Display all insights in a single clean dashboard notebook
+Built as a zero-dependency, client-side SPA. No backend. No build step. Opens in a browser and runs.
 
 ---
 
-## 📊 Visualizations (8 Total)
+## What It Does
 
-1. Distribution of Consumption vs Generation
-2. Correlation Heatmap
-3. ROI Distribution by Panel Type
-4. Monthly Savings vs System Cost
-5. Payback Period Distribution
-6. Subsidy % vs ROI
-7. CO₂ Saved vs Annual Output
-8. ROI by Ownership & Location
+- **Property Discovery** — Scans Singapore districts (Central, East, North, North-East, West regions) for heritage-fit properties using Google Places API with a smart simulated fallback
+- **Figment Scoring Engine** — Scores each property owner 0–100 based on reachability (phone/email), review signals, rating, vacancy indicators, heritage fit, and online listing status
+- **AI Outreach Generation** — Generates hyper-personalised WhatsApp messages and cold emails pitched in Figment's voice — heritage pride, revenue share model, conservation mission
+- **CRM Pipeline** — Kanban board to track properties from sourced → contacted → pitched → won
+- **Data Export** — CSV and JSON export of all scored properties
 
 ---
 
-## 🤖 ML Models Trained (4 Total)
+## Scoring Logic
 
-| Model Name              | Target Variable           | Type          |
-|------------------------|---------------------------|---------------|
-| ROI Prediction          | `roi_%`                   | Regression    |
-| Payback Period          | `payback_period_years`    | Regression    |
-| Monthly Savings         | `monthly_savings_rs`      | Regression    |
-| High ROI Classification | ROI ≥ 30% (binary flag)   | Classification|
+A property owner scores high when they are:
 
-Each model was evaluated using:
-- RMSE & R² for regressions
-- Accuracy & ROC AUC for classification
-
----
-
-## 🧠 Feature Importance
-
-We also plot feature importances for all models to identify which system attributes impact ROI and savings the most.
+| Signal | Why It Matters |
+|--------|---------------|
+| Phone + Email available | Reachable — outreach is possible |
+| No website | Likely agent-dependent — open to managed model |
+| High review count | Established owner, higher trust |
+| Heritage-fit property type | Shophouse, colonial, conservation — Figment's sweet spot |
+| Appears under-utilised | Vacancy pressure — open to new arrangements |
+| High rating | Property is presentable, easier to onboard |
 
 ---
 
-## 📂 Files Included
+## AI Outreach
 
-- `solar_dashboard_full.ipynb` – Complete notebook with visuals, models, and summary
-- `solar_analysis.csv` – Cleaned dataset (assumed, not included here)
-- `ml_model_summary.csv` – Optional exportable summary of model metrics
-- `README.md` – This file
-- `PROCESS_DOC.md` – Step-by-step breakdown of logic and decisions
+Powered by OpenAI `gpt-4o-mini`. Prompts are written in Figment's brand voice:
 
----
-
-## 🚀 Getting Started
-
-To run this project in Google Colab:
-1. Upload the dataset: `cleaned_solar_dataset.csv`
-2. Open `solar_dashboard_full.ipynb`
-3. Run cells sequentially
-4. View visual insights and model outputs in a single notebook
+- **WhatsApp** — Warm, personal, under 80 words, ends with one open question. Signed as Amit from Figment Acquisitions.
+- **Email** — Professional cold outreach leading with heritage pride, not money. References Figment's NYT/WSJ/Travel+Leisure coverage. Under 130 words.
 
 ---
 
-## 👨‍🔬 Author
+## Stack
 
-Amit Derwal  
-_ML for Green Energy Enthusiast_  
-[LinkedIn](https://www.linkedin.com) | [GitHub](https://github.com)
+- **Frontend** — HTML5, CSS3, Vanilla JavaScript (zero dependencies)
+- **APIs** — Google Places API, OpenAI API
+- **State** — localStorage
+- **Libraries** — Chart.js, SheetJS
 
 ---
 
-## 📜 License
+## Running Locally
 
-This project is open source and available under the [MIT License](LICENSE).
+```bash
+git clone https://github.com/clowNox/leads_webapp.git
+cd leads_webapp
+python3 -m http.server 8080
+```
+
+Open `http://localhost:8080` in Chrome.
+
+> Do not open `index.html` directly via `file://` — Google Maps API will block it.
+
+---
+
+## Configuration
+
+Go to **Settings** in the sidebar:
+
+1. **Google Places API key** — enables live property search (Maps JavaScript API + Places API must both be enabled in Google Cloud Console)
+2. **OpenAI API key** — enables AI outreach generation
+
+Both keys are stored in `localStorage` only. Never committed to the repo.
+
+---
+
+## Project Context
+
+Built as part of a Figment-specific AI tooling stack. Maps directly to Figment's deal sourcing and supply acquisition requirements — identifying heritage property owners at scale and initiating personalised outreach automatically.
+
+Related projects: [DC Agent Framework](https://github.com/clowNox) · [MahabharataOS](https://github.com/clowNox)
