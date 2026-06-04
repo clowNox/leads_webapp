@@ -335,7 +335,7 @@
       genBar.style.width = '100%';
       genSub.textContent = 'Complete!';
 
-      let results = await fetchRealGoogleLeads(area, state, industry);
+      let results = null; // fetchRealGoogleLeads disabled — using simulated data
       if (!results) {
         console.log('Using simulated property data (no Google API key).');
         results = generateLeads(area, state, industry);
