@@ -455,7 +455,7 @@
         '<td><span class="score-badge score-badge--sm ' + l.scoreCls + '">' + l.score + '</span></td>' +
         '<td>' + gapTags + '</td>' +
         '<td>' + l.contact + '</td>' +
-        '<td><button class="btn btn--sm btn--tertiary">View</button></td>';
+        '<td><button class="btn btn--sm btn--tertiary view-btn">View</button></td>';
       resultsTbody.appendChild(tr);
     });
   }
@@ -601,3 +601,11 @@
   upSteps();
 
 })();
+document.addEventListener('click', function(e) {
+  if (!e.target.classList.contains('view-btn')) return;
+  const tr = e.target.closest('tr');
+  if (!tr) return;
+  const name = tr.querySelector('strong') ? tr.querySelector('strong').textContent : '';
+  const lead = (window.__leadarchLeads||[]).find(l => l.name === name);
+  if (lead && typeof window.__openLeadDetail === 'function') window.__openLeadDetail(lead, lead.name+'|'+lead.city);
+});

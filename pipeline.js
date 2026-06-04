@@ -178,72 +178,92 @@ window.__renderPricingCalc = function(lead) {
 };
 
 // ── Lead Detail Modal ──
-function openLeadDetail(lead, id) {
+window.__openLeadDetail = function openLeadDetail(lead, id) {
   currentDetailLead = { lead, id };
-  const pd = pipelineData[id] || { stage: 'new', notes: '', tags: [] };
+  const pd = pipelineData[id] || { stage: 'new', notes: '', tags: [], followUpDate: '' };
   const p = lead.profile;
-
-  window.__selectedDomain = null; // Reset on open
 
   $('#lead-detail-name').textContent = lead.name;
   $('#lead-detail-body').innerHTML = `
     <div class="lead-detail-grid">
-      <div class="profile-row"><span class="profile-label">Industry</span><span class="profile-value">${lead.industry}</span></div>
+      <div class="profile-row"><span class="profile-label">Property Type</span><span class="profile-value">${lead.industry}</span></div>
       <div class="profile-row"><span class="profile-label">Location</span><span class="profile-value">${lead.city}</span></div>
       <div class="profile-row"><span class="profile-label">Score</span><span class="score-badge ${lead.scoreCls}">${lead.score}/100 ${lead.scoreLabel}</span></div>
-      <div class="profile-row"><span class="profile-label">Stage</span>
+      <div class="profile-row"><span class="profile-label">Heritage Fit</span><span class="profile-value ${p.isHeritageFit?'pv--yes':'pv--warn'}">${p.isHeritageFit?'High match ✓':'Partial match'}</span></div>
+      <div class="profile-row"><span class="profile-label">Vacancy Signal</span><span class="profile-value ${p.appearsVacant?'pv--warn':'pv--yes'}">${p.appearsVacant?'Under-utilised ⚠':'Active'}</span></div>
+      <div class="profile-row"><span class="profile-label">Rating</span><span class="profile-value">${p.rating} ★ (${p.reviewCount} reviews)</span></div>
+      <div class="profile-row"><span class="profile-label">Phone</span><span class="profile-value ${p.hasPhone?'pv--yes':'pv--no'}">${p.hasPhone?'Available ✓':'Not found ✗'}</span></div>
+      <div class="profile-row"><span class="profile-label">Email</span><span class="profile-value ${p.hasEmail?'pv--yes':'pv--no'}">${p.hasEmail?'Available ✓':'Not found ✗'}</span></div>
+      <div class="profile-row"><span class="profile-label">Pipeline Stage</span>
         <select class="form-input" id="detail-stage" style="max-width:160px;padding:.35rem .5rem;font-size:.8rem;">
           ${STAGES.map(s => `<option value="${s}" ${pd.stage===s?'selected':''}>${s.charAt(0).toUpperCase()+s.slice(1)}</option>`).join('')}
         </select>
       </div>
-      <div class="profile-row"><span class="profile-label">Follow-up</span>
+      <div class="profile-row"><span class="profile-label">Follow-up Date</span>
         <input type="date" class="form-input" id="detail-followup" value="${pd.followUpDate || ''}" style="max-width:160px;padding:.35rem .5rem;font-size:.8rem;" />
       </div>
-      <div class="profile-row"><span class="profile-label">Rating</span><span class="profile-value">${p.rating} ★ (${p.reviewCount} reviews)</span></div>
-      <div class="profile-row"><span class="profile-label">Phone</span><span class="profile-value ${p.hasPhone?'pv--yes':'pv--no'}">${p.hasPhone?'Available':'Not shared'}</span></div>
-      <div class="profile-row"><span class="profile-label">Email</span><span class="profile-value ${p.hasEmail?'pv--yes':'pv--no'}">${p.hasEmail?'Available':'Not shared'}</span></div>
-      <div class="profile-row"><span class="profile-label">Website</span><span class="profile-value ${!p.hasWebsite?'pv--no':'pv--yes'}">${p.hasWebsite?'Has website':'No website'}</span></div>
     </div>
+
     <div class="lead-card__gaps" style="margin-bottom:1rem;">${lead.gaps.map(g=>`<span class="gap-tag">${g}</span>`).join('')}</div>
 
-    <div id="enrichment-container" style="margin-bottom:1rem; padding: 1rem; background: var(--surface-container-low); border-radius: var(--radius-md);"></div>
-
-    <div id="domain-checker-container" style="margin-bottom:1rem; padding: 1rem; background: var(--surface-container-low); border-radius: var(--radius-md);"></div>
-
     <div class="lead-detail-section">
-      <h4>💰 Pricing Calculator — Revenue Potential</h4>
-      <div id="pricing-calc-container">${buildPricingCalc(lead)}</div>
+      <h4>🤖 AI Outreach Generator</h4>
+      <p style="font-size:0.8rem;color:var(--on-surface-variant);margin-bottom:0.75rem;">Generate a personalised message to this property owner in Figment's voice.</p>
+      <div style="display:flex;gap:0.75rem;margin-bottom:1rem;">
+        <button class="btn btn--primary" id="lead-detail-whatsapp" style="flex:1;">💬 WhatsApp Pitch</button>
+        <button class="btn btn--secondary" id="lead-detail-email" style="flex:1;">📧 Email Pitch</button>
+      </div>
+      <div id="ai-pitch-output" style="display:none;background:var(--surface-container-low);border-radius:var(--radius-md);padding:1rem;font-size:0.85rem;line-height:1.7;white-space:pre-wrap;"></div>
+      <button id="copy-pitch-btn" style="display:none;margin-top:0.5rem;" class="btn btn--tertiary btn--sm">Copy to Clipboard</button>
     </div>
 
     <div class="lead-detail-section">
       <h4>📝 Notes</h4>
-      <textarea class="lead-detail-notes" id="detail-notes" placeholder="Add notes about this lead...">${pd.notes||''}</textarea>
+      <textarea class="lead-detail-notes" id="detail-notes" placeholder="Add acquisition notes...">${pd.notes||''}</textarea>
     </div>
-    <div class="lead-detail-section" style="display:flex; justify-content:space-between; align-items:center;">
-      <div style="flex:1; margin-right: 1rem;">
-        <h4>🏷️ Tags</h4>
-        <input class="lead-detail-tags-input" id="detail-tags" placeholder="Comma-separated: hot, callback, needs-logo" value="${(pd.tags||[]).join(', ')}" />
-      </div>
-      <div>
-        <h4>💼 Lead Resale</h4>
-        <label style="display:flex; align-items:center; gap:0.5rem; font-size:0.85rem; cursor:pointer;">
-          <input type="checkbox" id="detail-sellable" ${pd.isSellable ? 'checked' : ''} style="width:16px;height:16px;accent-color:#f59e0b;" />
-          Mark as Sellable
-        </label>
-      </div>
+
+    <div class="lead-detail-section">
+      <h4>🏷️ Tags</h4>
+      <input class="lead-detail-tags-input" id="detail-tags" placeholder="e.g. hot, follow-up, heritage-confirmed" value="${(pd.tags||[]).join(', ')}" />
     </div>`;
 
-  const overlay = $('#lead-detail-overlay');
-  overlay.classList.remove('hidden');
+  $('#lead-detail-whatsapp').addEventListener('click', async () => {
+    const btn = $('#lead-detail-whatsapp');
+    const output = $('#ai-pitch-output');
+    const copyBtn = $('#copy-pitch-btn');
+    btn.textContent = 'Generating...';
+    btn.disabled = true;
+    const aiResponse = await window.__generateAIPitch(lead, 'whatsapp');
+    btn.textContent = '💬 WhatsApp Pitch';
+    btn.disabled = false;
+    output.textContent = aiResponse || `Hi! I came across ${lead.name} and wanted to reach out. We at Figment conserve heritage properties across Singapore and partner with owners on a revenue-share model. Would you be open to a quick chat?`;
+    output.style.display = 'block';
+    copyBtn.style.display = 'inline-block';
+  });
+
+  $('#lead-detail-email').addEventListener('click', async () => {
+    const btn = $('#lead-detail-email');
+    const output = $('#ai-pitch-output');
+    const copyBtn = $('#copy-pitch-btn');
+    btn.textContent = 'Generating...';
+    btn.disabled = true;
+    const aiResponse = await window.__generateAIPitch(lead, 'email');
+    btn.textContent = '📧 Email Pitch';
+    btn.disabled = false;
+    output.textContent = aiResponse || `Subject: Partnership opportunity — ${lead.name}\n\nDear Owner,\n\nI'm reaching out from Figment, Singapore's heritage homes company featured in NYT and Travel + Leisure. We'd love to explore a conservation partnership for your property.\n\nBest,\nAmit | Acquisitions, Figment`;
+    output.style.display = 'block';
+    copyBtn.style.display = 'inline-block';
+  });
+
+  $('#copy-pitch-btn').addEventListener('click', () => {
+    navigator.clipboard.writeText($('#ai-pitch-output').textContent).then(() => {
+      $('#copy-pitch-btn').textContent = 'Copied ✓';
+      setTimeout(() => { $('#copy-pitch-btn').textContent = 'Copy to Clipboard'; }, 2000);
+    });
+  });
+
+  $('#lead-detail-overlay').classList.remove('hidden');
   document.body.style.overflow = 'hidden';
-  
-  if (typeof window.__initDomainChecker === 'function') {
-    window.__initDomainChecker(lead);
-  }
-  
-  if (typeof window.__initEnrichmentScanner === 'function') {
-    window.__initEnrichmentScanner(lead);
-  }
 }
 
 // Close detail modal
