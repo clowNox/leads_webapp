@@ -273,30 +273,30 @@
     stepA.className = 'location-step' + (a ? ' location-step--done' : (s ? ' location-step--active' : ''));
   }
 
-  fillSel(locState, Object.keys(LOCATIONS).sort(), 'Select State / UT');
+  fillSel(locState, Object.keys(LOCATIONS).sort(), 'Select Region');
   locState.disabled = false;
-  locCountry.value = 'India';
-  activeAreaText.textContent = 'India';
+  locCountry.value = 'Singapore';
+  activeAreaText.textContent = 'Singapore';
   upSteps();
 
   locCountry.addEventListener('change', () => {
-    if (locCountry.value) fillSel(locState, Object.keys(LOCATIONS).sort(), 'Select State / UT');
-    else resetSel(locState, 'Select state first');
-    resetSel(locArea, 'Select area');
+    if (locCountry.value) fillSel(locState, Object.keys(LOCATIONS).sort(), 'Select Region');
+    else resetSel(locState, 'Select region first');
+    resetSel(locArea, 'Select district');
     activeAreaText.textContent = locCountry.value || 'No area selected';
     upSteps();
   });
 
   locState.addEventListener('change', () => {
     const st = locState.value;
-    if (st && LOCATIONS[st]) fillSel(locArea, LOCATIONS[st], 'Select City / Area');
-    else resetSel(locArea, 'Select area');
-    activeAreaText.textContent = st ? st + ', India' : 'India';
+    if (st && LOCATIONS[st]) fillSel(locArea, LOCATIONS[st], 'Select District');
+    else resetSel(locArea, 'Select district');
+    activeAreaText.textContent = st ? st + ', Singapore' : 'Singapore';
     upSteps();
   });
 
   locArea.addEventListener('change', () => {
-    activeAreaText.textContent = locArea.value ? locArea.value + ', ' + locState.value : locState.value + ', India';
+    activeAreaText.textContent = locArea.value ? locArea.value + ', ' + locState.value : locState.value + ', Singapore';
     upSteps();
   });
 
