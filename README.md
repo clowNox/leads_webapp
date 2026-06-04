@@ -1,30 +1,85 @@
-# LeadArch — Precision Architect
 
-**LeadArch** is a premium, client-side web application designed for generating, scoring, and managing local business leads. It identifies digital gaps (like missing websites or inactive social media) and provides automated tools to pitch digital marketing services to those businesses.
+# ☀️ Solar ROI Insights – ML & Visualization Dashboard
 
-## ✨ Features
+This project provides a complete end-to-end analysis of solar panel installations using a dataset of 50,000+ rows. It combines data visualizations and machine learning models to uncover financial and environmental insights related to solar adoption.
 
-- **Lead Generation**: Live search using Google Maps API with a smart fallback engine.
-- **Algorithmic Lead Scoring**: Automatically scores leads (0-100) based on their digital footprint (missing website, custom domain, social media, reviews).
-- **CRM Pipeline**: A drag-and-drop Kanban board to manage leads through sales stages.
-- **AI-Powered Outreach**: Integrates with the OpenAI API (ChatGPT) to dynamically write hyper-personalized cold emails and WhatsApp messages based on a lead's specific digital gaps.
-- **Data Export**: Export to Excel/CSV or push directly to Google Sheets.
+---
+
+## 📌 Project Objectives
+
+- Explore trends in solar consumption, savings, and subsidies
+- Visualize solar performance metrics across key dimensions
+- Train ML models to predict:
+  - ROI percentage
+  - Payback period
+  - Monthly savings
+  - High ROI classification
+- Display all insights in a single clean dashboard notebook
+
+---
+
+## 📊 Visualizations (8 Total)
+
+1. Distribution of Consumption vs Generation
+2. Correlation Heatmap
+3. ROI Distribution by Panel Type
+4. Monthly Savings vs System Cost
+5. Payback Period Distribution
+6. Subsidy % vs ROI
+7. CO₂ Saved vs Annual Output
+8. ROI by Ownership & Location
+
+---
+
+## 🤖 ML Models Trained (4 Total)
+
+| Model Name              | Target Variable           | Type          |
+|------------------------|---------------------------|---------------|
+| ROI Prediction          | `roi_%`                   | Regression    |
+| Payback Period          | `payback_period_years`    | Regression    |
+| Monthly Savings         | `monthly_savings_rs`      | Regression    |
+| High ROI Classification | ROI ≥ 30% (binary flag)   | Classification|
+
+Each model was evaluated using:
+- RMSE & R² for regressions
+- Accuracy & ROC AUC for classification
+
+---
+
+## 🧠 Feature Importance
+
+We also plot feature importances for all models to identify which system attributes impact ROI and savings the most.
+
+---
+
+## 📂 Files Included
+
+- `solar_dashboard_full.ipynb` – Complete notebook with visuals, models, and summary
+- `solar_analysis.csv` – Cleaned dataset (assumed, not included here)
+- `ml_model_summary.csv` – Optional exportable summary of model metrics
+- `README.md` – This file
+- `PROCESS_DOC.md` – Step-by-step breakdown of logic and decisions
+
+---
 
 ## 🚀 Getting Started
 
-Since LeadArch is built entirely as a Single Page Application using vanilla HTML/JS/CSS, there is no build step or backend required!
+To run this project in Google Colab:
+1. Upload the dataset: `cleaned_solar_dataset.csv`
+2. Open `solar_dashboard_full.ipynb`
+3. Run cells sequentially
+4. View visual insights and model outputs in a single notebook
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/clowNox/leads_webapp.git
-   ```
-2. Open `index.html` in your web browser.
-3. Configure your API keys (Google Maps & OpenAI) in the Settings panel to unlock full functionality.
+---
 
-## 🏗 Tech Stack
+## 👨‍🔬 Author
 
-- **Frontend**: HTML5, CSS3, Vanilla JavaScript
-- **State Management**: `localStorage`
-- **Integrations**: Google Places API, OpenAI API, Chart.js, SheetJS
+Amit Derwal  
+_ML for Green Energy Enthusiast_  
+[LinkedIn](https://www.linkedin.com) | [GitHub](https://github.com)
 
-For a more detailed technical breakdown, please see the [System Overview](SYSTEM_OVERVIEW.md).
+---
+
+## 📜 License
+
+This project is open source and available under the [MIT License](LICENSE).
